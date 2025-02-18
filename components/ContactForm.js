@@ -6,8 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from 'react-toastify';
 import { ClipLoader } from "react-spinners"; // Лоадер из react-spinners
-import "../styles/form.css";
-
 
 const schema = z.object({
   name: z.string().min(2, "Заполните поле"),
@@ -47,8 +45,6 @@ export default function ContactForm() {
 
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const [fileName, setFileName] = useState("");
-
 
   const onSubmit = async (data) => {
     setError(null);
@@ -98,52 +94,36 @@ export default function ContactForm() {
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setFileName(file ? file.name : "");
-  };
-  
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="form-container">
-      <h1 className="form-title">Оставьте заявку</h1>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <h1 className="text-3xl text-center font-bold mb-6">Оставьте заявку</h1>
 
-      <input {...register("name")} placeholder="Имя" className="form-input" />
-      {errors.name && <p className="form-error">{errors.name.message}</p>}
+      <input {...register("name")} placeholder="Имя" className="border p-2 w-full" />
+      {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-      <input
-        {...register("email")}
-        placeholder="Email/телефон для связи"
-        className="form-input"
-      />
-      {errors.email && <p className="form-error">{errors.email.message}</p>}
+      <input {...register("email")} placeholder="Email/телефон для связи" className="border p-2 w-full" />
+      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-      <input
-        {...register("vin")}
-        placeholder="VIN/Frame или марка/модель авто"
-        className="form-input"
-      />
+      <input {...register("vin")} placeholder="VIN/Frame или марка/модель авто" className="border p-2 w-full" />
 
-      <textarea {...register("message")} placeholder="Описание запроса" className="form-textarea" />
+      <textarea {...register("message")} placeholder="Описание запроса" className="border p-2 w-full" />
 
-      <div className="form-file-wrapper">
-        <input
-          type="file"
-          {...register("file")}
-          id="file-upload"
-          className="form-input-file"
-          onChange={handleFileChange}
-        />
-        <label htmlFor="file-upload" className="form-file-label">
-          Прикрепить фото
-        </label>
-        <span className="form-file-name">{fileName || "Файл не выбран"}</span>
-      </div>
-      <button type="submit" disabled={isSubmitting} className="form-button">
-        {isSubmitting ? <ClipLoader color="white" size={24} /> : "Отправить"}
+      <input type="file" {...register("file")} className="border p-2 w-full" />
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-blue-500 text-white p-2 w-full flex items-center justify-center"
+      >
+        {isSubmitting ? (
+          <ClipLoader color="white" size={24} /> // Показываем лоадер
+        ) : (
+          "Отправить"
+        )}
       </button>
 
-      {success && <p className="form-success">{success}</p>}
-      {error && <p className="form-error">{error}</p>}
+      {success && <p className="text-green-500">{success}</p>}
+      {error && <p className="text-red-500">{error}</p>}
     </form>
   );
 }
