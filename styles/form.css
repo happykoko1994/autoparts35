@@ -90,7 +90,9 @@ label {
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .submit-button:hover {

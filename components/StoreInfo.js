@@ -2,7 +2,7 @@ import "../styles/store-info.css";
 
 export default function StoreInfo() {
   const mapLink =
-    "https://yandex.kz/maps/26081/kolpino/?ll=30.496704%2C59.747442&mode=routes&rtext=~59.747423%2C30.497532&rtt=taxi&ruri=~&z=19.07";
+    "https://yandex.kz/maps/26081/kolpino/?ll=30.497481%2C59.747399&mode=routes&rtext=~59.747481%2C30.497476&rtt=taxi&ruri=~&z=16.86";
   return (
     <div className="store-info">
       <h1 className="store-info__title">
