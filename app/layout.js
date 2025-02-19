@@ -57,7 +57,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <header className="w-full bg-gray-100 border-b border-gray-300 py-4 px-6 flex justify-end items-center fixed">
+        <header className="w-full bg-gray-100 border-b border-gray-300 py-4 px-6 justify-end items-center fixed hidden md:flex">
           <div className="flex flex-col">
             <div className="flex items-center space-x-3">
               <FaPhoneAlt className="text-gray-600" />
@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
 
         <main className="flex-grow flex flex-col">{children}</main>
 
-        <footer className="w-full bg-gray-100 border-t border-gray-300 py-1 flex flex-col items-center fixed bottom-0">
+        {/* <footer className="w-full bg-gray-100 border-t border-gray-300 py-1 flex flex-col items-center fixed bottom-0">
           <p className="mb-2">Мы в социальных сетях:</p>
           <a
             href="https://vk.com/club78660843"
@@ -86,7 +86,7 @@ export default function RootLayout({ children }) {
           >
             <FaVk className="w-6 h-6" />
           </a>
-        </footer>
+        </footer> */}
       </body>
     </html>
   );

@@ -68,11 +68,12 @@ export default function StoreInfo() {
           <div className="store-info__contact-item">
             <h3 className="store-info__subtitle">График работы</h3>
             <p className="store-info__text">
-              <span className="workdays">По будням</span>
-              <span className="worktime">с 10:00 до 19:00</span>
+              <span className="workdays">По будням</span><span className="worktime">10:00 - 19:00</span>
+              
               <span className="separator"></span>
-              <span className="weekends">Выходные и праздники</span>
-              <span className="worktime">с 10:00 до 18:00</span>
+              
+              <span className="weekends">Выходные и праздники</span><span className="worktime">10:00 - 18:00</span>
+              
             </p>
           </div>
           <div className="store-info__contact-item">
