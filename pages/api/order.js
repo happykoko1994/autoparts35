@@ -9,7 +9,7 @@ import url from "url";
 
 dotenv.config();
 
-const MAX_RECORDS = 50; // Максимальное количество заказов в базе
+const MAX_RECORDS = 10; // Максимальное количество заказов в базе
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
