@@ -32,7 +32,6 @@ export const metadata = {
       "Лучший выбор автозапчастей в Санкт-Петербурге. В наличии и под заказ.",
     type: "website",
     url: process.env.URL,
-    image: `${process.env.URL}/og-image.jpg`,
   },
 };
 
@@ -50,7 +49,6 @@ export default function RootLayout({ children }) {
         />
         <meta property="og:type" content={metadata.openGraph.type} />
         <meta property="og:url" content={metadata.openGraph.url} />
-        <meta property="og:image" content={metadata.openGraph.image} />
         <title>{metadata.title}</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
