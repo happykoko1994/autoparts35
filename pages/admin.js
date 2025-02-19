@@ -4,14 +4,16 @@ import "../app/globals.css";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ClipLoader } from "react-spinners"; // Лоадер из react-spinners
+import { ClipLoader } from "react-spinners"; 
 
 export default function AdminPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [modalImage, setModalImage] = useState(null);
-  const [deletingOrderId, setDeletingOrderId] = useState(null); // Для отслеживания процесса удаления
+  const [deletingOrderId, setDeletingOrderId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage, setOrdersPerPage] = useState(5); // Динамическое количество заказов
 
   useEffect(() => {
     async function fetchOrders() {
@@ -33,7 +35,7 @@ export default function AdminPage() {
   async function deleteOrder(id) {
     if (!confirm("Удалить этот заказ?")) return;
 
-    setDeletingOrderId(id); // Устанавливаем, что сейчас удаляется заказ
+    setDeletingOrderId(id);
 
     try {
       const res = await fetch(`/api/orders/${id}`, { method: "DELETE" });
@@ -41,10 +43,14 @@ export default function AdminPage() {
 
       setOrders(orders.filter((order) => order._id !== id));
       toast.success("Заказ успешно удалён!");
+
+      if ((currentPage - 1) * ordersPerPage >= orders.length - 1) {
+        setCurrentPage((prev) => Math.max(prev - 1, 1));
+      }
     } catch (err) {
       toast.error(err.message || "Произошла ошибка при удалении");
     } finally {
-      setDeletingOrderId(null); // Завершаем процесс удаления
+      setDeletingOrderId(null);
     }
   }
 
@@ -65,6 +71,11 @@ export default function AdminPage() {
       </div>
     );
 
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
+
   return (
     <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center">
       <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-md">
@@ -72,13 +83,29 @@ export default function AdminPage() {
       </h1>
 
       <div className="max-w-3xl w-full bg-white p-6 mt-6 rounded-xl shadow-lg">
+        <div className="flex justify-end items-center mb-4 space-x-3">
+          <span className="text-lg">Заказов на странице:</span>
+          <select
+            className="border p-2 rounded-md"
+            value={ordersPerPage}
+            onChange={(e) => {
+              setOrdersPerPage(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+          >
+            <option value={2}>2</option>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+          </select>
+        </div>
+
         {orders.length === 0 ? (
           <p className="text-center text-gray-500 text-lg">
             Заказов пока нет 😞
           </p>
         ) : (
           <ul className="space-y-4">
-            {orders.map((order) => (
+            {currentOrders.map((order) => (
               <li
                 key={order._id}
                 className="border border-gray-200 rounded-xl p-4 shadow-sm bg-gray-50 flex justify-between items-center transition-all hover:shadow-md hover:bg-gray-100"
@@ -118,10 +145,10 @@ export default function AdminPage() {
                 <button
                   onClick={() => deleteOrder(order._id)}
                   className="bg-red-500 hover:bg-red-600 text-black py-1.5 px-4 rounded-lg shadow-md active:scale-90 transition-transform duration-150 flex items-center justify-center"
-                  disabled={deletingOrderId === order._id} // Блокируем кнопку, если заказ удаляется
+                  disabled={deletingOrderId === order._id}
                 >
                   {deletingOrderId === order._id ? (
-                    <ClipLoader color="white" size={24} /> // Лоадер на кнопке
+                    <ClipLoader color="white" size={24} />
                   ) : (
                     "Удалить"
                   )}
@@ -130,6 +157,43 @@ export default function AdminPage() {
             ))}
           </ul>
         )}
+
+        {/* Пагинация */}
+        <div className="flex justify-center space-x-2 mt-6">
+          <button
+            onClick={() => setCurrentPage(1)}
+            className="bg-gray-200 px-3 py-1 rounded-lg shadow hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentPage === 1}
+          >
+            В начало
+          </button>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className="bg-gray-200 px-3 py-1 rounded-lg shadow hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentPage === 1}
+          >
+            Назад
+          </button>
+          <span className="text-lg font-semibold">
+            {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
+            }
+            className="bg-gray-200 px-3 py-1 rounded-lg shadow hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentPage >= totalPages}
+          >
+            Вперёд
+          </button>
+          <button
+            onClick={() => setCurrentPage(totalPages)}
+            className="bg-gray-200 px-3 py-1 rounded-lg shadow hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentPage === totalPages}
+          >
+            В конец
+          </button>
+        </div>
       </div>
 
       {modalImage && (

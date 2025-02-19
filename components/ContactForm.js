@@ -4,8 +4,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { toast } from 'react-toastify';
-import { ClipLoader } from "react-spinners"; // Лоадер из react-spinners
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
+import "../styles/form.css";
+
+const acceptedFormats = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+];
 
 const schema = z.object({
   name: z.string().min(2, "Заполните поле"),
@@ -15,7 +24,6 @@ const schema = z.object({
   file: z.any(),
 });
 
-// Функция для загрузки файла в Cloudinary
 const uploadFileToCloudinary = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -26,14 +34,11 @@ const uploadFileToCloudinary = async (file) => {
   });
 
   if (!res.ok) {
-    throw new Error('Ошибка загрузки файла');
+    throw new Error("Ошибка загрузки файла");
   }
 
-  const result = await res.json(); // Получаем ответ в JSON
-
-  console.log("Ответ от сервера:", result);
-
-  return result; // Возвращаем URL файла
+  const result = await res.json();
+  return result;
 };
 
 export default function ContactForm() {
@@ -43,87 +48,166 @@ export default function ContactForm() {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
+  const [fileName, setFileName] = useState("Файл не выбран");
+  const [file, setFile] = useState(null);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (!selectedFile) {
+      // Если пользователь нажал "Отмена", сбрасываем выбранный файл
+      setFile(null);
+      setFileName("Файл не выбран");
+      return;
+    }
+
+    if (acceptedFormats.includes(selectedFile.type)) {
+      setFile(selectedFile);
+
+      // Обрезаем длинное имя файла
+      const fileName =
+        selectedFile.name.length > 20
+          ? selectedFile.name.slice(0, 17) +
+            "..." +
+            selectedFile.name.split(".").pop()
+          : selectedFile.name;
+
+      setFileName(fileName);
+    } else {
+      setFile(null);
+      setFileName("Недопустимый формат файла");
+      toast.error("Допустимые форматы: JPEG, PNG, WEBP, HEIC, HEIF");
+    }
+  };
 
   const onSubmit = async (data) => {
     setError(null);
     setSuccess(null);
-  
-    let fileUrl = null;
-  
-    // Отправка файла на Cloudinary (если файл есть)
-    if (data.file.length > 0) {
-      const file = data.file[0];
+    let fileUrl = ""; // Теперь по умолчанию будет пустая строка
+
+    if (file) {
       try {
         const cloudinaryResponse = await uploadFileToCloudinary(file);
         fileUrl = cloudinaryResponse.url;
       } catch (err) {
-        setError('Ошибка при отправке файла на Cloudinary');
+        setError("Ошибка при отправке файла на Cloudinary");
         return;
       }
     }
-  
+
     try {
       const res = await fetch("/api/order", {
         method: "POST",
-        headers: { "Content-Type": "application/json" }, // 👈 Передаём JSON
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: data.name,
           email: data.email,
           vin: data.vin,
           message: data.message,
-          fileUrl, // 👈 Передаём уже загруженный URL
+          fileUrl: fileUrl || "", // Гарантируем, что будет строка
         }),
       });
-  
+
       const result = await res.json();
-      console.log("Ответ от сервера:", result);
-  
+
       if (!res.ok) {
         throw new Error(result.message);
       }
-  
+
       setSuccess("Заявка отправлена!");
       toast.success("Заявка отправлена!");
-      console.log("Заказ успешно отправлен, путь к файлу:", result.fileUrl);
     } catch (err) {
       setError(err.message);
-      console.error("Ошибка при отправке формы:", err);
-      toast.error("Произошла ошибка при удалении");
+      toast.error("Произошла ошибка при отправке");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <h1 className="text-3xl text-center font-bold mb-6">Оставьте заявку</h1>
+    <form onSubmit={handleSubmit(onSubmit)} className="form-container">
+      <h1 className="form-title">Оставьте заявку</h1>
 
-      <input {...register("name")} placeholder="Имя" className="border p-2 w-full" />
-      {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+      <div className="form-group">
+        <label htmlFor="name">Имя</label>
+        <input
+          id="name"
+          {...register("name")}
+          placeholder="Введите ваше имя"
+          className="input-field"
+        />
+        {errors.name && <p className="error-message">{errors.name.message}</p>}
+      </div>
 
-      <input {...register("email")} placeholder="Email/телефон для связи" className="border p-2 w-full" />
-      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-
-      <input {...register("vin")} placeholder="VIN/Frame или марка/модель авто" className="border p-2 w-full" />
-
-      <textarea {...register("message")} placeholder="Описание запроса" className="border p-2 w-full" />
-
-      <input type="file" {...register("file")} className="border p-2 w-full" />
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 text-white p-2 w-full flex items-center justify-center"
-      >
-        {isSubmitting ? (
-          <ClipLoader color="white" size={24} /> // Показываем лоадер
-        ) : (
-          "Отправить"
+      <div className="form-group">
+        <label htmlFor="email">Email или телефон</label>
+        <input
+          id="email"
+          {...register("email")}
+          placeholder="Введите email или телефон"
+          className="input-field"
+        />
+        {errors.email && (
+          <p className="error-message">{errors.email.message}</p>
         )}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="vin">VIN/Frame или марка и модель авто</label>
+        <input
+          id="vin"
+          {...register("vin")}
+          placeholder="Введите VIN или марку авто"
+          className="input-field"
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="message">Описание запроса</label>
+        <textarea
+          id="message"
+          {...register("message")}
+          placeholder="Опишите ваш запрос"
+          className="input-field"
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Загрузите файл (изображение или видео)</label>
+        <div className="custom-file-input">
+          <input
+            type="file"
+            id="file"
+            accept={acceptedFormats.join(",")}
+            onChange={handleFileChange}
+            hidden
+          />
+          <label htmlFor="file" className="file-label">
+            Выбрать файл
+          </label>
+          <span className="file-name">{fileName}</span>
+
+          {file && (
+            <button
+              type="button"
+              onClick={() => {
+                setFile(null);
+                setFileName("Файл не выбран");
+              }}
+              className="remove-file-button"
+            >
+              Удалить файл
+            </button>
+          )}
+        </div>
+      </div>
+
+      <button type="submit" disabled={isSubmitting} className="submit-button">
+        {isSubmitting ? <ClipLoader color="white" size={24} /> : "Отправить"}
       </button>
 
-      {success && <p className="text-green-500">{success}</p>}
-      {error && <p className="text-red-500">{error}</p>}
+      {success && <p className="success-message">{success}</p>}
+      {error && <p className="error-message">{error}</p>}
     </form>
   );
 }
