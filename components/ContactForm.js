@@ -61,22 +61,22 @@ export default function ContactForm() {
       <h1 className="form-title">Оставьте заявку</h1>
 
       <div className="form-group">
-        <label htmlFor="name">Имя</label>
+        <label className="custom-label" htmlFor="name">Имя</label>
         <input
           id="name"
           {...register("name")}
-          placeholder="Введите ваше имя"
+          placeholder="Николай"
           className="input-field"
         />
         {errors.name && <p className="error-message">{errors.name.message}</p>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="email">Email или телефон</label>
+        <label className="custom-label" htmlFor="email">Email или телефон</label>
         <input
           id="email"
           {...register("email")}
-          placeholder="Введите email или телефон"
+          placeholder="example@mail.com"
           className="input-field"
         />
         {errors.email && (
@@ -85,22 +85,22 @@ export default function ContactForm() {
       </div>
 
       <div className="form-group">
-        <label htmlFor="vin">VIN/Frame или марка и модель авто</label>
+        <label className="custom-label" htmlFor="vin">VIN/Frame или марка и модель авто</label>
         <input
           id="vin"
           {...register("vin")}
-          placeholder="Введите VIN или марку авто"
+          placeholder="XW8ZZZ61ZDG000123"
           className="input-field"
         />
         {errors.vin && <p className="error-message">{errors.vin.message}</p>}
       </div>
 
       <div className="form-group">
-        <label htmlFor="message">Описание запроса</label>
+        <label className="custom-label" htmlFor="message">Описание запроса</label>
         <textarea
           id="message"
           {...register("message")}
-          placeholder="Опишите ваш запрос"
+          placeholder="Диски тормозные передние"
           className="input-field"
         />
         {errors.message && (

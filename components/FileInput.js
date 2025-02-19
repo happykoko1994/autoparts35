@@ -12,7 +12,7 @@ const FileInput = ({ fileName, onChange, onRemove }) => {
           onChange={onChange}
           hidden
         />
-        <label htmlFor="file" className="file-label">Выбрать файл</label>
+        <label htmlFor="file" className="file-label">Выбрать фото</label>
         <span className="file-name">{fileName}</span>
 
         {fileName !== "Файл не выбран" && (
