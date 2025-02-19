@@ -3,9 +3,15 @@ import React from "react";
 const FileInput = ({ fileName, onChange, onRemove }) => {
   return (
     <div className="form-group">
-      <label>Загрузите файл (изображение или видео)</label>
+      <label>Загрузите изображение</label>
       <div className="custom-file-input">
-        <input type="file" id="file" onChange={onChange} hidden />
+        <input
+          type="file"
+          id="file"
+          accept="image/jpeg, image/png, image/webp, image/heic, image/heif"
+          onChange={onChange}
+          hidden
+        />
         <label htmlFor="file" className="file-label">Выбрать файл</label>
         <span className="file-name">{fileName}</span>
 

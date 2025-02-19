@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     await connectDB();
     console.log("БД подключена, загружаем заказы...");
     
-    const orders = await Order.find().sort({ createdAt: -1 }).limit(10);
+    const orders = await Order.find().sort({ createdAt: -1 });
     console.log("Найдено заказов:", orders.length);
 
     res.status(200).json(orders);

@@ -1,6 +1,13 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { FaPhoneAlt, FaWhatsapp, FaVk } from "react-icons/fa";
 import "./globals.css";
+import { Manrope } from "next/font/google";
+
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"], // поддержка кириллицы
+  weight: ["300", "400", "500", "600", "700"], // нужные толщины
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

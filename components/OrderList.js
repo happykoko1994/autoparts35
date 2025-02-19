@@ -18,7 +18,7 @@ export default function OrderList({ orders, deleteOrder, deletingOrderId, setMod
               <p className="text-sm text-gray-500">
                 {order.email} | {order.vin}
               </p>
-              <p className="text-gray-600 italic">{order.message || "Нет комментария"}</p>
+              <p className="text-gray-600 pt-4 pr-3">{order.message || "Нет комментария"}</p>
             </div>
   
             {/* Правая часть: картинка и кнопка */}

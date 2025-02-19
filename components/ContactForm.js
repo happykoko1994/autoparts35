@@ -79,7 +79,9 @@ export default function ContactForm() {
           placeholder="Введите email или телефон"
           className="input-field"
         />
-        {errors.email && <p className="error-message">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="error-message">{errors.email.message}</p>
+        )}
       </div>
 
       <div className="form-group">
@@ -90,6 +92,7 @@ export default function ContactForm() {
           placeholder="Введите VIN или марку авто"
           className="input-field"
         />
+        {errors.vin && <p className="error-message">{errors.vin.message}</p>}
       </div>
 
       <div className="form-group">
@@ -100,9 +103,16 @@ export default function ContactForm() {
           placeholder="Опишите ваш запрос"
           className="input-field"
         />
+        {errors.message && (
+          <p className="error-message">{errors.message.message}</p>
+        )}
       </div>
 
-      <FileInput fileName={fileName} onChange={handleFileChange} onRemove={resetFile} />
+      <FileInput
+        fileName={fileName}
+        onChange={handleFileChange}
+        onRemove={resetFile}
+      />
 
       <button type="submit" disabled={isSubmitting} className="submit-button">
         {isSubmitting ? <ClipLoader color="white" size={24} /> : "Отправить"}

@@ -2,6 +2,7 @@ import connectDB from "../../lib/db";
 import Order from "../../models/Order";
 import { z } from "zod";
 import nodemailer from "nodemailer";
+import { schema } from "../../utils/validation";
 import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 import path from "path";
@@ -9,7 +10,7 @@ import url from "url";
 
 dotenv.config();
 
-const MAX_RECORDS = 10; // Максимальное количество заказов в базе
+const MAX_RECORDS = 30; // Максимальное количество заказов в базе
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
