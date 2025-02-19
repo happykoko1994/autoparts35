@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -11,7 +11,13 @@ import { uploadFileToCloudinary } from "../utils/uploadService";
 import { useFileUpload } from "../hooks/useFileUpload";
 import FileInput from "./FileInput";
 
+const COOLDOWN_TIME = 60 * 1000; // 60 секунд
+
 export default function ContactForm() {
+  const [lastSentTime, setLastSentTime] = useState(
+    parseInt(localStorage.getItem("lastSentTime")) || 0
+  );
+  const [cooldown, setCooldown] = useState(0);
   const {
     register,
     handleSubmit,
@@ -22,7 +28,31 @@ export default function ContactForm() {
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (lastSentTime) {
+      const remainingTime = COOLDOWN_TIME - (Date.now() - lastSentTime);
+      if (remainingTime > 0) {
+        setCooldown(remainingTime);
+        const interval = setInterval(() => {
+          setCooldown((prev) => {
+            if (prev <= 1000) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prev - 1000;
+          });
+        }, 1000);
+      }
+    }
+  }, [lastSentTime]);
+
   const onSubmit = async (data) => {
+    if (cooldown > 0) {
+      toast.warn(`Подождите ${Math.ceil(cooldown / 1000)} сек перед повторной отправкой`);
+      // {cooldown > 0 ? `Подождите ${Math.ceil(cooldown / 1000)} сек` : ""}
+      return;
+    }
+
     setError(null);
     setSuccess(null);
     let fileUrl = "";
@@ -48,6 +78,10 @@ export default function ContactForm() {
 
       if (!res.ok) throw new Error(result.message);
 
+      setLastSentTime(Date.now());
+      localStorage.setItem("lastSentTime", Date.now().toString());
+      setCooldown(COOLDOWN_TIME);
+
       setSuccess("Заявка отправлена!");
       toast.success("Заявка отправлена!");
     } catch (err) {
@@ -61,7 +95,9 @@ export default function ContactForm() {
       <h1 className="form-title">Оставьте заявку</h1>
 
       <div className="form-group">
-        <label className="custom-label" htmlFor="name">Имя</label>
+        <label className="custom-label" htmlFor="name">
+          Имя
+        </label>
         <input
           id="name"
           {...register("name")}
@@ -72,7 +108,9 @@ export default function ContactForm() {
       </div>
 
       <div className="form-group">
-        <label className="custom-label" htmlFor="email">Email или телефон</label>
+        <label className="custom-label" htmlFor="email">
+          Email или телефон
+        </label>
         <input
           id="email"
           {...register("email")}
@@ -85,7 +123,9 @@ export default function ContactForm() {
       </div>
 
       <div className="form-group">
-        <label className="custom-label" htmlFor="vin">VIN/Frame или марка и модель авто</label>
+        <label className="custom-label" htmlFor="vin">
+          VIN/Frame или марка и модель авто
+        </label>
         <input
           id="vin"
           {...register("vin")}
@@ -96,7 +136,9 @@ export default function ContactForm() {
       </div>
 
       <div className="form-group">
-        <label className="custom-label" htmlFor="message">Описание запроса</label>
+        <label className="custom-label" htmlFor="message">
+          Описание запроса
+        </label>
         <textarea
           id="message"
           {...register("message")}
@@ -116,7 +158,7 @@ export default function ContactForm() {
 
       <button type="submit" disabled={isSubmitting} className="submit-button">
         {isSubmitting ? <ClipLoader color="white" size={24} /> : "Отправить"}
-      </button>
+      </button>  
 
       {success && <p className="success-message">{success}</p>}
       {error && <p className="error-message">{error}</p>}
