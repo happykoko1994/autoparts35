@@ -1,6 +1,8 @@
 import "../styles/store-info.css";
 
 export default function StoreInfo() {
+  const mapLink =
+    "https://yandex.kz/maps/26081/kolpino/?ll=30.496704%2C59.747442&mode=routes&rtext=~59.747423%2C30.497532&rtt=taxi&ruri=~&z=19.07";
   return (
     <div className="store-info">
       <h1 className="store-info__title">
@@ -68,12 +70,13 @@ export default function StoreInfo() {
           <div className="store-info__contact-item">
             <h3 className="store-info__subtitle">График работы</h3>
             <p className="store-info__text">
-              <span className="workdays">По будням</span><span className="worktime">10:00 - 19:00</span>
-              
+              <span className="workdays">По будням</span>
+              <span className="worktime">10:00 - 19:00</span>
+
               <span className="separator"></span>
-              
-              <span className="weekends">Выходные и праздники</span><span className="worktime">10:00 - 18:00</span>
-              
+
+              <span className="weekends">Выходные и праздники</span>
+              <span className="worktime">10:00 - 18:00</span>
             </p>
           </div>
           <div className="store-info__contact-item">
@@ -101,16 +104,18 @@ export default function StoreInfo() {
           <div className="store-info__contact-item">
             <h3 className="store-info__subtitle">Наш адрес</h3>
             <p className="store-info__text">
-              <a
-                href="https://yandex.ru/map-widget/v1/?um=constructor%3A268b02b94b7c0e572e44479b62b3077c8a5b258aeaf89b68f824db557a45bc25&amp;source=constructor&ll=30.497896,59.746959&z=15"
-                target="_blank"
-                className="store-info__link"
-              >
-                Санкт-Петербург, Московская Славянка, 17А, Торговый центр, этаж
-                2, павильон №35
-              </a>
+              Санкт-Петербург, Московская Славянка, 17А, Торговый центр, этаж 2,
+              павильон №35
             </p>
           </div>
+          <a
+            href={mapLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+          >
+            Построить маршрут
+          </a>
         </div>
 
         <div className="store-info__contact-right">
