@@ -14,9 +14,7 @@ import FileInput from "./FileInput";
 const COOLDOWN_TIME = 60 * 1000; // 60 секунд
 
 export default function ContactForm() {
-  const [lastSentTime, setLastSentTime] = useState(
-    parseInt(localStorage.getItem("lastSentTime")) || 0
-  );
+  const [lastSentTime, setLastSentTime] = useState(0);
   const [cooldown, setCooldown] = useState(0);
   const {
     register,
@@ -29,8 +27,11 @@ export default function ContactForm() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (lastSentTime) {
-      const remainingTime = COOLDOWN_TIME - (Date.now() - lastSentTime);
+    if (typeof window !== "undefined") {
+      const storedTime = parseInt(localStorage.getItem("lastSentTime")) || 0;
+      setLastSentTime(storedTime);
+
+      const remainingTime = COOLDOWN_TIME - (Date.now() - storedTime);
       if (remainingTime > 0) {
         setCooldown(remainingTime);
         const interval = setInterval(() => {
@@ -48,8 +49,9 @@ export default function ContactForm() {
 
   const onSubmit = async (data) => {
     if (cooldown > 0) {
-      toast.warn(`Подождите ${Math.ceil(cooldown / 1000)} сек перед повторной отправкой`);
-      // {cooldown > 0 ? `Подождите ${Math.ceil(cooldown / 1000)} сек` : ""}
+      toast.warn(
+        `Подождите ${Math.ceil(cooldown / 1000)} сек перед повторной отправкой`
+      );
       return;
     }
 
@@ -78,8 +80,10 @@ export default function ContactForm() {
 
       if (!res.ok) throw new Error(result.message);
 
-      setLastSentTime(Date.now());
-      localStorage.setItem("lastSentTime", Date.now().toString());
+      // Устанавливаем время отправки в localStorage
+      const currentTime = Date.now();
+      localStorage.setItem("lastSentTime", currentTime.toString());
+      setLastSentTime(currentTime);
       setCooldown(COOLDOWN_TIME);
 
       setSuccess("Заявка отправлена!");
@@ -158,7 +162,7 @@ export default function ContactForm() {
 
       <button type="submit" disabled={isSubmitting} className="submit-button">
         {isSubmitting ? <ClipLoader color="white" size={24} /> : "Отправить"}
-      </button>  
+      </button>
 
       {success && <p className="success-message">{success}</p>}
       {error && <p className="error-message">{error}</p>}

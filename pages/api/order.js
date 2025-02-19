@@ -27,6 +27,39 @@ export default async function handler(req, res) {
   try {
     await connectDB();
 
+    const data = schema.parse(req.body);
+
+    console.log("📌 Данные перед сохранением в базу:", data);
+
+    // Проверяем количество заказов
+    const count = await Order.countDocuments();
+    if (count >= MAX_RECORDS) {
+      const oldestOrder = await Order.findOne().sort({ createdAt: 1 });
+
+      if (oldestOrder) {
+        // Удаляем изображение из Cloudinary, если есть
+        if (oldestOrder.fileUrl) {
+          const parsedUrl = url.parse(oldestOrder.fileUrl);
+          const filename = path.basename(parsedUrl.pathname); // "filename.jpg"
+          const publicId = `uploads/${filename.split(".")[0]}`; // "uploads/filename"
+        
+          console.log("🗑 Удаляем файл из Cloudinary:", publicId);
+        
+          const result = await cloudinary.uploader.destroy(publicId);
+          console.log("✔ Результат удаления файла:", result);
+        
+          if (result.result !== "ok") {
+            console.error("⚠ Ошибка удаления файла из Cloudinary:", result);
+          }
+        }
+        
+
+        // Удаляем старый заказ
+        await Order.deleteOne({ _id: oldestOrder._id });
+        console.log("🗑 Удалена старая запись:", oldestOrder._id);
+      }
+    }
+
     // Проверяем последнюю заявку от этого email
     const lastOrder = await Order.findOne({ email: req.body.email }).sort({ createdAt: -1 });
 
@@ -34,13 +67,18 @@ export default async function handler(req, res) {
       return res.status(429).json({ message: "Подождите перед повторной отправкой!" });
     }
 
-    const order = new Order(req.body);
+    // Сохраняем новый заказ
+    const order = new Order(data);
     await order.save();
 
-    res.status(201).json({ message: "Заявка отправлена!" });
+    res.status(201).json({ message: "Заказ успешно отправлен", fileUrl: data.fileUrl });
+    console.log("✅ Заказ сохранён в базе, файл:", data.fileUrl);
 
+    // Отправляем email (асинхронно)
+    sendEmailNotification(data).catch(console.error);
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера" });
+    console.error("❌ Ошибка при сохранении заказа:", error);
+    res.status(400).json({ message: error.message });
   }
 }
 
