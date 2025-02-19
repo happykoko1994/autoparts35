@@ -75,8 +75,9 @@ export default async function handler(req, res) {
     console.log("✅ Заказ сохранён в базе, файл:", data.fileUrl);
 
     // Отправляем email (асинхронно)
+    console.log("📩 Отправка email началась...");
     sendEmailNotification(data).catch(console.error);
-  } catch (error) {
+      } catch (error) {
     console.error("❌ Ошибка при сохранении заказа:", error);
     res.status(400).json({ message: error.message });
   }
@@ -84,25 +85,34 @@ export default async function handler(req, res) {
 
 // 📩 Функция отправки email
 async function sendEmailNotification(data) {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  try {
+    console.log("📩 Создание транспортера...");
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_RECEIVER,
-    subject: "Новый заказ",
-    text: `Имя: ${data.name}
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    console.log("📩 Отправка email...");
+    
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_RECEIVER,
+      subject: "Новый заказ",
+      text: `Имя: ${data.name}
 Обратная связь: ${data.email}
 VIN: ${data.vin || "Не указан"}
 Сообщение: ${data.message || "Без сообщения"}
 Файл: ${data.fileUrl ? data.fileUrl : "Не загружен"}
 Заказ можно посмотреть в админке: ${process.env.URL}/admin`,
-  });
+    });
 
-  console.log("✅ Email с заказом отправлен");
+    console.log("✅ Email отправлен:", info.response);
+  } catch (error) {
+    console.error("❌ Ошибка при отправке email:", error);
+  }
 }
+
