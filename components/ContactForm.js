@@ -3,43 +3,13 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
 import "../styles/form.css";
-
-const acceptedFormats = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/heic",
-  "image/heif",
-];
-
-const schema = z.object({
-  name: z.string().min(2, "Заполните поле"),
-  email: z.string().email("Некорректный email"),
-  vin: z.string().optional(),
-  message: z.string().optional(),
-  file: z.any(),
-});
-
-const uploadFileToCloudinary = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!res.ok) {
-    throw new Error("Ошибка загрузки файла");
-  }
-
-  const result = await res.json();
-  return result;
-};
+import { schema } from "../utils/validation";
+import { uploadFileToCloudinary } from "../utils/uploadService";
+import { useFileUpload } from "../hooks/useFileUpload";
+import FileInput from "./FileInput";
 
 export default function ContactForm() {
   const {
@@ -48,50 +18,20 @@ export default function ContactForm() {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const [fileName, setFileName] = useState("Файл не выбран");
-  const [file, setFile] = useState(null);
+  const { file, fileName, handleFileChange, resetFile } = useFileUpload();
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (!selectedFile) {
-      // Если пользователь нажал "Отмена", сбрасываем выбранный файл
-      setFile(null);
-      setFileName("Файл не выбран");
-      return;
-    }
-
-    if (acceptedFormats.includes(selectedFile.type)) {
-      setFile(selectedFile);
-
-      // Обрезаем длинное имя файла
-      const fileName =
-        selectedFile.name.length > 20
-          ? selectedFile.name.slice(0, 17) +
-            "..." +
-            selectedFile.name.split(".").pop()
-          : selectedFile.name;
-
-      setFileName(fileName);
-    } else {
-      setFile(null);
-      setFileName("Недопустимый формат файла");
-      toast.error("Допустимые форматы: JPEG, PNG, WEBP, HEIC, HEIF");
-    }
-  };
 
   const onSubmit = async (data) => {
     setError(null);
     setSuccess(null);
-    let fileUrl = ""; // Теперь по умолчанию будет пустая строка
+    let fileUrl = "";
 
     if (file) {
       try {
         const cloudinaryResponse = await uploadFileToCloudinary(file);
         fileUrl = cloudinaryResponse.url;
-      } catch (err) {
+      } catch {
         setError("Ошибка при отправке файла на Cloudinary");
         return;
       }
@@ -101,20 +41,12 @@ export default function ContactForm() {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          vin: data.vin,
-          message: data.message,
-          fileUrl: fileUrl || "", // Гарантируем, что будет строка
-        }),
+        body: JSON.stringify({ ...data, fileUrl }),
       });
 
       const result = await res.json();
 
-      if (!res.ok) {
-        throw new Error(result.message);
-      }
+      if (!res.ok) throw new Error(result.message);
 
       setSuccess("Заявка отправлена!");
       toast.success("Заявка отправлена!");
@@ -147,9 +79,7 @@ export default function ContactForm() {
           placeholder="Введите email или телефон"
           className="input-field"
         />
-        {errors.email && (
-          <p className="error-message">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="error-message">{errors.email.message}</p>}
       </div>
 
       <div className="form-group">
@@ -172,35 +102,7 @@ export default function ContactForm() {
         />
       </div>
 
-      <div className="form-group">
-        <label>Загрузите файл (изображение или видео)</label>
-        <div className="custom-file-input">
-          <input
-            type="file"
-            id="file"
-            accept={acceptedFormats.join(",")}
-            onChange={handleFileChange}
-            hidden
-          />
-          <label htmlFor="file" className="file-label">
-            Выбрать файл
-          </label>
-          <span className="file-name">{fileName}</span>
-
-          {file && (
-            <button
-              type="button"
-              onClick={() => {
-                setFile(null);
-                setFileName("Файл не выбран");
-              }}
-              className="remove-file-button"
-            >
-              Удалить файл
-            </button>
-          )}
-        </div>
-      </div>
+      <FileInput fileName={fileName} onChange={handleFileChange} onRemove={resetFile} />
 
       <button type="submit" disabled={isSubmitting} className="submit-button">
         {isSubmitting ? <ClipLoader color="white" size={24} /> : "Отправить"}
