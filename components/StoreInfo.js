@@ -112,7 +112,7 @@ export default function StoreInfo() {
             href={mapLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+            className="mb-4 inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out"
           >
             Построить маршрут
           </a>

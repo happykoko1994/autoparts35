@@ -84,10 +84,8 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8 flex flex-col items-center">
-      <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 drop-shadow-md">
-        Заказы
-      </h1>
-  
+      <h1 className="text-3xl font-semibold text-gray-800">Заказы</h1>
+
       <div className="max-w-3xl w-full bg-white p-6 mt-6 rounded-xl shadow-lg">
         <div className="flex justify-end items-center mb-4 space-x-3">
           <span className="text-lg">Заказов на странице:</span>
@@ -104,19 +102,31 @@ export default function AdminPage() {
             <option value={10}>10</option>
           </select>
         </div>
-  
+
         {/* Контейнер списка заказов */}
         <div className="space-y-4">
-          <OrderList orders={currentOrders} deleteOrder={deleteOrder} deletingOrderId={deletingOrderId} setModalImage={setModalImage}/>
+          <OrderList
+            orders={currentOrders}
+            deleteOrder={deleteOrder}
+            deletingOrderId={deletingOrderId}
+            setModalImage={setModalImage}
+          />
         </div>
-  
+
         {/* Пагинация */}
-        <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
-  
-      <ImageModal modalImage={modalImage} closeModal={() => setModalImage(null)} />
-  
+
+      <ImageModal
+        modalImage={modalImage}
+        closeModal={() => setModalImage(null)}
+      />
+
       <ToastContainer />
     </div>
   );
-} 
+}
