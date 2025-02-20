@@ -27,38 +27,38 @@ export default function StoreInfo() {
           <div className="store-info__logo">
             <img
               src="nissan.png"
-              alt="Logo 1"
+              alt="nissan"
               className="store-info__logo-image"
             />
           </div>
           <div className="store-info__logo">
-            <img src="vw.png" alt="Logo 2" className="store-info__logo-image" />
+            <img src="vw.png" alt="vw" className="store-info__logo-image" />
           </div>
           <div className="store-info__logo">
             <img
               src="skoda.png"
-              alt="Logo 3"
+              alt="skoda"
               className="store-info__logo-image"
             />
           </div>
           <div className="store-info__logo">
             <img
               src="mitsubishi.png"
-              alt="Logo 4"
+              alt="mitsubishi"
               className="store-info__logo-image"
             />
           </div>
           <div className="store-info__logo">
             <img
               src="toyota.png"
-              alt="Logo 5"
+              alt="toyota"
               className="store-info__logo-image"
             />
           </div>
           <div className="store-info__logo">
             <img
               src="suzuki.png"
-              alt="Logo 6"
+              alt="suzuki"
               className="store-info__logo-image"
             />
           </div>

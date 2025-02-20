@@ -20,22 +20,43 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Автозапчасти для иномарок",
+  title: "Автозапчасти для иномарок в Московской Славянке",
   description:
     "Купить автозапчасти в Санкт-Петербурге. Широкий ассортимент, В наличии и под заказ.",
   keywords:
-    "автозапчасти, купить запчасти, автозапчасти СПб, автозапчасти для иномарок, детали для авто, автотовары",
+    "автозапчасти Колпино, автозапчасти Пушкин, автозапчасти Московская Славянка, автозапчасти СПб, запчасти для иномарок, купить автозапчасти, автозапчасти недорого",
   author: "Автомагазин СПб",
   openGraph: {
-    title: "Автозапчасти для иномарок",
+    title: "Автозапчасти для иномарок в Московской Славянке",
     description:
       "Лучший выбор автозапчастей в Санкт-Петербурге. В наличии и под заказ.",
     type: "website",
     url: process.env.URL,
+    images: [
+      {
+        url: "/mitsubishi.png",
+        alt: "Автозапчасти Mitsubishi",
+      },
+    ],
   },
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "AutoPartsStore",
+    "name": "Автозапчасти для иномарок",
+    "image": "https://autoparts35.vercel.app/mitsubishi.png",
+    "telephone": "+7 (812) 244-28-73",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Московская Славянка, 17А, Торговый центр, этаж 2, павильон №35",
+      "addressLocality": "Санкт-Петербург",
+      "addressCountry": "RU"
+    },
+    "url": "https://autoparts35.vercel.app/",
+    "openingHours": "Mo-Fr 10:00-19:00, Sa-Su 10:00-18:00"
+  };
   return (
     <html lang="ru">
       <head>
@@ -49,6 +70,12 @@ export default function RootLayout({ children }) {
         />
         <meta property="og:type" content={metadata.openGraph.type} />
         <meta property="og:url" content={metadata.openGraph.url} />
+        <meta property="og:image" content={metadata.openGraph.images} />
+        <meta property="og:image:alt" content="Автозапчасти Mitsubishi" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <title>{metadata.title}</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
