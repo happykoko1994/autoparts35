@@ -20,11 +20,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Автозапчасти для иномарок в Московской Славянке",
+  title: "Автозапчасти Mitsubishi, Toyota, VAG в Санкт-Петербурге – В наличии и под заказ",
   description:
-    "Купить автозапчасти в Санкт-Петербурге. Широкий ассортимент, В наличии и под заказ.",
+    "Широкий выбор оригинальных и аналоговых автозапчастей для Mitsubishi, Toyota, Volkswagen, Skoda в Санкт-Петербурге. Доставка и самовывоз.",
   keywords:
-    "автозапчасти Колпино, автозапчасти Пушкин, автозапчасти Московская Славянка, автозапчасти СПб, запчасти для иномарок, купить автозапчасти, автозапчасти недорого",
+    "автозапчасти Колпино, автозапчасти Пушкин, автозапчасти Московская Славянка, автозапчасти СПб, запчасти для иномарок, купить автозапчасти, автозапчасти Mitsubishi, запчасти Toyota, запчасти VAG, детали Volkswagen, Skoda",
   author: "Автомагазин СПб",
   openGraph: {
     title: "Автозапчасти для иномарок в Московской Славянке",
@@ -76,7 +76,7 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <title>{metadata.title}</title>
+        <title>Автозапчасти для иномарок в Московской Славянке</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
