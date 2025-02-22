@@ -70,7 +70,7 @@ export default function RootLayout({ children }) {
         />
         <meta property="og:type" content={metadata.openGraph.type} />
         <meta property="og:url" content={metadata.openGraph.url} />
-        <meta property="og:image" content={metadata.openGraph.images} />
+        <meta property="og:image" content={metadata.openGraph.images[0].url} />
         <meta property="og:image:alt" content="Автозапчасти Mitsubishi" />
         <script
           type="application/ld+json"
