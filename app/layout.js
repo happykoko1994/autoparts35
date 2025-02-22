@@ -31,10 +31,10 @@ export const metadata = {
     description:
       "Лучший выбор автозапчастей в Санкт-Петербурге. В наличии и под заказ.",
     type: "website",
-    url: process.env.URL,
+    url: "https://autoparts35.vercel.app/",
     images: [
       {
-        url: "/mitsubishi.png",
+        url: "https://autoparts35.vercel.app/mitsubishi.png",
         alt: "Автозапчасти Mitsubishi",
       },
     ],
