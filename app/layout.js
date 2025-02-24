@@ -29,7 +29,7 @@ export const metadata = {
   openGraph: {
     title: "Автозапчасти для иномарок в Московской Славянке",
     description:
-      "Лучший выбор автозапчастей в Санкт-Петербурге. В наличии и под заказ.",
+      "Автозапчасти для Mitsubishi, Toyota, Volkswagen, Skoda в Московской Славянке. Оригинальные детали и аналоги. В наличии и под заказ.",
     type: "website",
     url: "https://autoparts35.vercel.app/",
     images: [
