@@ -20,7 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Автозапчасти Mitsubishi, Toyota, VAG в Санкт-Петербурге – В наличии и под заказ",
+  title:
+    "Автозапчасти Mitsubishi, Toyota, VAG в Санкт-Петербурге – В наличии и под заказ",
   description:
     "Автозапчасти для Mitsubishi, Toyota, Volkswagen, Skoda в Московской Славянке. Оригинальные детали и аналоги. В наличии и под заказ.",
   keywords:
@@ -45,17 +46,18 @@ export default function RootLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AutoPartsStore",
-    "name": "Автозапчасти для иномарок",
-    "image": "https://autoparts35.vercel.app/mitsubishi.png",
-    "telephone": "+7 (812) 244-28-73",
-    "address": {
+    name: "Автозапчасти для иномарок",
+    image: "https://autoparts35.vercel.app/mitsubishi.png",
+    telephone: "+7 (812) 244-28-73",
+    address: {
       "@type": "PostalAddress",
-      "streetAddress": "Московская Славянка, 17А, Торговый центр, этаж 2, павильон №35",
-      "addressLocality": "Санкт-Петербург",
-      "addressCountry": "RU"
+      streetAddress:
+        "Московская Славянка, 17А, Торговый центр, этаж 2, павильон №35",
+      addressLocality: "Санкт-Петербург",
+      addressCountry: "RU",
     },
-    "url": "https://autoparts35.vercel.app/",
-    "openingHours": "Mo-Fr 10:00-19:00, Sa-Su 10:00-18:00"
+    url: "https://autoparts35.vercel.app/",
+    openingHours: "Mo-Fr 10:00-19:00, Sa-Su 10:00-18:00",
   };
   return (
     <html lang="ru">
@@ -76,12 +78,39 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <Script
+          id="yandex-metrika"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+      ym(100032690, "init", {
+          clickmap:true,
+          trackLinks:true,
+          accurateTrackBounce:true
+      });
+    `,
+          }}
+        />
         <title>Автозапчасти для иномарок в Московской Славянке</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
+        <noscript>
+          <div>
+            <img
+              src="https://mc.yandex.ru/watch/100032690"
+              style={{ position: "absolute", left: "-9999px" }}
+              alt=""
+            />
+          </div>
+        </noscript>
         <header className="w-full bg-gray-100 border-b border-gray-300 py-4 px-6 justify-end items-center fixed hidden md:flex">
           <div className="flex flex-col">
             <div className="flex items-center space-x-3">
