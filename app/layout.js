@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { FaPhoneAlt, FaWhatsapp, FaVk } from "react-icons/fa";
 import "./globals.css";
 import { Manrope } from "next/font/google";
+import Script from "next/script";
 
 const manrope = Manrope({
   subsets: ["latin", "cyrillic"], // поддержка кириллицы
